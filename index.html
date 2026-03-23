@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>横浜結和会 - 合気道理念と活動の可視化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #fdfcfb; color: #2d2a26; }
+        .serif { font-family: 'Noto Serif JP', serif; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin: auto; height: 350px; }
+        .tab-active { border-bottom: 3px solid #6b705c; color: #6b705c; font-weight: bold; }
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(229, 231, 235, 0.5); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Global Navigation -->
+    <nav class="sticky top-0 z-50 glass-card">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🥋</span>
+                <span class="serif text-xl tracking-tighter">合気道 横浜結和会</span>
+            </div>
+            <div class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="#history" class="hover:text-green-800 transition">歴史・比較</a>
+                <a href="#spirit" class="hover:text-green-800 transition">理念・心得</a>
+                <a href="#resilience" class="hover:text-green-800 transition">教育価値</a>
+                <a href="#data" class="hover:text-green-800 transition">会費・運営</a>
+            </div>
+            <div>
+                <a href="tel:07089396143" class="bg-[#6b705c] text-white px-5 py-2 rounded-full text-sm font-bold hover:opacity-90 transition">
+                    <i class="fa-solid fa-phone mr-1"></i> 体験予約
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="relative py-24 px-4 bg-gradient-to-b from-[#f4f1ea] to-[#fdfcfb] overflow-hidden">
+        <div class="absolute top-0 right-0 opacity-5 pointer-events-none translate-x-1/4 -translate-y-1/4">
+            <i class="fa-solid fa-circle-nodes text-[400px]"></i>
+        </div>
+        <div class="max-w-4xl mx-auto text-center relative">
+            <div class="inline-block bg-[#6b705c]/10 text-[#6b705c] px-4 py-1 rounded-full text-xs font-bold mb-6">合気道を通じた地域貢献と心身育成</div>
+            <h1 class="serif text-4xl md:text-6xl text-gray-900 mb-6 leading-tight">
+                「争わない」という、<br><span class="text-[#6b705c]">至高の強さ。</span>
+            </h1>
+            <p class="text-lg text-gray-700 leading-relaxed mb-10 max-w-2xl mx-auto">
+                戦場の術から平和の「道」へ。横浜結和会は、開祖・植芝盛平の「和」と「結び」の理念を継承し、現代社会における調和を追求します。
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#spirit" class="bg-[#6b705c] text-white px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                    理念を詳しく知る
+                </a>
+                <a href="#data" class="bg-white text-[#6b705c] border border-[#6b705c] px-10 py-4 rounded-full shadow-sm hover:bg-gray-50 transition">
+                    活動場所・会費
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-32">
+
+        <!-- 1. History & Comparison -->
+        <section id="history" class="scroll-mt-20">
+            <div class="mb-16 text-center">
+                <h2 class="serif text-3xl mb-4">源流から現代への軌跡</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">武道がどのように発展し、他武道と何を分かち、何を独自の道としたかを可視化します。</p>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 p-8 md:p-12">
+                <div class="flex flex-wrap gap-2 mb-10 bg-gray-50 p-1 rounded-2xl w-fit mx-auto">
+                    <button onclick="showTab('origin')" id="btn-origin" class="tab-btn px-8 py-3 rounded-xl transition tab-active">歴史的変遷</button>
+                    <button onclick="showTab('compare')" id="btn-compare" class="tab-btn px-8 py-3 rounded-xl transition text-gray-500">柔道との違い</button>
+                </div>
+
+                <div id="content-origin" class="tab-pane fade-in">
+                    <div class="grid md:grid-cols-3 gap-10">
+                        <div class="relative p-6 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                            <div class="text-4xl mb-4">⚔️</div>
+                            <h4 class="font-bold text-lg mb-3">戦場：組み打ち</h4>
+                            <p class="text-sm leading-relaxed text-gray-600">中世の戦場において武器を失った際の最終手段。相手を制圧するための致死性の高い技術が源流です。</p>
+                        </div>
+                        <div class="relative p-6 bg-white border border-gray-100 rounded-3xl shadow-sm">
+                            <div class="text-4xl mb-4">🏯</div>
+                            <h4 class="font-bold text-lg mb-3">泰平：柔術</h4>
+                            <p class="text-sm leading-relaxed text-gray-600">江戸時代、社会秩序の維持や護身、心身の鍛錬を目的とした「術」へと洗練されました。</p>
+                            <div class="absolute -right-5 top-1/2 -translate-y-1/2 hidden md:block text-gray-300">
+                                <i class="fa-solid fa-chevron-right text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="relative p-8 bg-[#6b705c] text-white rounded-3xl shadow-lg shadow-[#6b705c]/20">
+                            <div class="text-4xl mb-4">🕊️</div>
+                            <h4 class="font-bold text-lg mb-3 text-white">現代：合気道</h4>
+                            <p class="text-sm leading-relaxed opacity-90">植芝盛平により「敵の破壊」から「自己の成長」へ。争いの心を持たない平和への道へ昇華されました。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-compare" class="tab-pane hidden fade-in">
+                    <div class="overflow-hidden rounded-2xl border border-gray-100">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-5 border-b text-sm font-bold uppercase tracking-wider text-gray-500">比較項目</th>
+                                    <th class="p-5 border-b text-sm font-bold uppercase tracking-wider text-gray-500">柔道（競技武道）</th>
+                                    <th class="p-5 border-b text-sm font-bold uppercase tracking-wider text-[#6b705c]">合気道（和の武道）</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="p-5 border-b font-bold text-gray-700">目的</td>
+                                    <td class="p-5 border-b">勝利・教育・スポーツ</td>
+                                    <td class="p-5 border-b text-[#6b705c] font-medium italic">調和・自己修養・相生き</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="p-5 border-b font-bold text-gray-700">試合形式</td>
+                                    <td class="p-5 border-b">トーナメント試合あり</td>
+                                    <td class="p-5 border-b font-bold text-[#6b705c]">試合なし（対立の否定）</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="p-5 border-b font-bold text-gray-700">区分</td>
+                                    <td class="p-5 border-b">体重別・男女別</td>
+                                    <td class="p-5 border-b">区分なし（老若男女が共に稽古）</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="p-5 border-b font-bold text-gray-700">技の特性</td>
+                                    <td class="p-5 border-b">投げ、絞め（ルール遵守）</td>
+                                    <td class="p-5 border-b">関節技、投げ、武器術（理合い）</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Spirit & Principles -->
+        <section id="spirit" class="scroll-mt-20 bg-[#f4f1ea] -mx-4 px-4 py-24 rounded-[5rem]">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="serif text-3xl mb-4 text-gray-900">心得七箇条</h2>
+                    <p class="text-gray-700">道場での学びを日常の「しつけ」や「品格」に変えるための指針です。</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 01</span>
+                            <i class="fa-solid fa-comment-dots text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">挨拶・返事</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            心を開き、相手との最初の「結び」を作る基本。元気な声は自分と相手の壁を取り払い、円滑な関係を築きます。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+                    
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 02</span>
+                            <i class="fa-solid fa-shoe-prints text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">履き物をそろえる</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            「脚下照顧（きゃっかしょうこ）」。動作の終わりを丁寧にすることで、内面の乱れを整え、次への準備をします。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 03</span>
+                            <i class="fa-solid fa-earth-asia text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">場を察する</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            周囲との調和を考え、自らの立ち居振る舞いを律する。言葉と態度を状況に合わせて改善し、和を乱しません。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 04</span>
+                            <i class="fa-solid fa-hand-holding-heart text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">感謝を行動に</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            「ありがとうございます」を形骸化させず、具体的な行動（気遣い、手助け）で感謝の気持ちを体現します。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 05</span>
+                            <i class="fa-solid fa-people-pulling text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">自他尊重</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            自分を大切にすることが、他者を慈しむ心の余裕を生みます。共に高め合う「相生き」の精神です。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard(this)" class="bg-white p-8 rounded-3xl shadow-sm cursor-pointer hover:shadow-xl transition-all duration-300 group border border-transparent hover:border-[#6b705c]/30">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-1 rounded font-bold uppercase">Article 07</span>
+                            <i class="fa-solid fa-person-arrow-up-from-line text-[#6b705c] opacity-20 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4">立腰（りつよう）</h4>
+                        <p class="text-sm text-gray-500 hidden group-[.active]:block fade-in leading-relaxed">
+                            腰を立てる正しい姿勢が、心の安定と広い視野、そして精神的な自立をもたらします。
+                        </p>
+                        <div class="mt-4 text-[10px] text-[#6b705c] font-bold tracking-widest flex items-center">
+                            MORE INFO <i class="fa-solid fa-chevron-down ml-2 group-[.active]:rotate-180 transition"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Resilience & Education -->
+        <section id="resilience" class="scroll-mt-20">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="serif text-4xl mb-8">「受身」という<br>最強のレジリエンス</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        合気道で最初に学ぶのは、倒されることの恐怖を克服する「受身」です。
+                        投げ飛ばされても安全に着地し、即座に立ち上がる。それは社会という荒波で<span class="font-bold text-[#6b705c]">「何度失敗しても学び、再起する力」</span>を育むことに他なりません。
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex gap-6 p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-md transition">
+                            <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-seedling text-[#6b705c] text-xl"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">子供の情操教育</h5>
+                                <p class="text-sm text-gray-600">挨拶や礼儀作法を習慣化し、他人を思いやる心と、困難に折れない強い精神の土台を作ります。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6 p-6 border border-gray-100 rounded-3xl bg-white shadow-sm hover:shadow-md transition">
+                            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-shield-halved text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">シニアの健康と護身</h5>
+                                <p class="text-sm text-gray-600">転倒時の大怪我を防ぐ実用的な受身と、関節を柔軟に保つ動きで、生涯現役をサポートします。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-gray-100 rounded-[4rem] p-12 aspect-square flex flex-col items-center justify-center text-center overflow-hidden">
+                        <div class="absolute inset-0 bg-[#6b705c] opacity-[0.03]"></div>
+                        <div class="relative z-10 scale-110">
+                            <i class="fa-solid fa-arrows-rotate text-7xl text-[#6b705c] mb-6 opacity-20"></i>
+                            <div class="text-3xl font-bold text-gray-800 mb-2">Growth Cycle</div>
+                            <div class="space-y-3 font-medium text-gray-500">
+                                <div class="p-2 border-b">1. 失敗を受け容れる (受身)</div>
+                                <div class="p-2 border-b">2. しなやかに復元する (立腰)</div>
+                                <div class="p-2">3. 経験を糧に再び挑む (成長)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Operations & Data -->
+        <section id="data" class="scroll-mt-20">
+            <div class="text-center mb-16">
+                <h2 class="serif text-3xl mb-4 text-gray-900">活動・会費データ</h2>
+                <p class="text-gray-600">地域に根ざした活動内容と、年齢層に応じた会費体系を公開しています。</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Fee Chart -->
+                <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100">
+                    <h3 class="font-bold text-xl mb-8 flex items-center gap-3">
+                        <i class="fa-solid fa-chart-simple text-[#6b705c]"></i>
+                        年齢別 月会費推移
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="feeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="flex flex-col gap-8">
+                    <div class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm">
+                        <h4 class="font-bold text-[#6b705c] text-lg mb-6 flex items-center">
+                            <i class="fa-solid fa-location-dot mr-2"></i> 稽古拠点
+                        </h4>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="p-4 bg-gray-50 rounded-2xl">
+                                <span class="font-bold block mb-1">二俣川地区</span>
+                                <span class="text-sm text-gray-600">南本宿、宮沢、万騎が原 各道場</span>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-2xl">
+                                <span class="font-bold block mb-1">金沢八景地区</span>
+                                <span class="text-sm text-gray-600">関東学院大学・他拠点</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 text-white p-8 rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                        <div class="absolute right-0 bottom-0 opacity-10 translate-x-1/4 translate-y-1/4 group-hover:scale-110 transition duration-700">
+                            <i class="fa-solid fa-mountain-sun text-[200px]"></i>
+                        </div>
+                        <h4 class="font-bold text-xl mb-4 relative z-10">特別クラス</h4>
+                        <ul class="space-y-4 relative z-10">
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check text-[#6b705c] mt-1"></i>
+                                <div>
+                                    <span class="font-bold">杖剣クラス</span>
+                                    <p class="text-xs text-gray-400">武器術（杖・剣）の専門技術を追求する特別講座。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-circle-check text-[#6b705c] mt-1"></i>
+                                <div>
+                                    <span class="font-bold">指導科クラス</span>
+                                    <p class="text-xs text-gray-400">将来の指導者や、高次の理論を研究する層を対象。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Public Footer -->
+    <footer class="bg-white border-t border-gray-100 py-20">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-12 mb-16">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl">🥋</span>
+                        <span class="serif text-2xl font-bold">横浜結和会</span>
+                    </div>
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        横浜市旭区・金沢区を中心に活動する合気道道場です。「結び」の精神を大切に、心豊かな人生を歩むための稽古を続けています。
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#6b705c] hover:text-white transition"><i class="fa-brands fa-line"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#6b705c] hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-[#6b705c] hover:text-white transition"><i class="fa-solid fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 text-gray-900">サイトマップ</h5>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#history" class="hover:text-[#6b705c]">合気道の歴史</a></li>
+                        <li><a href="#spirit" class="hover:text-[#6b705c]">心得七箇条</a></li>
+                        <li><a href="#resilience" class="hover:text-[#6b705c]">教育的価値</a></li>
+                        <li><a href="#data" class="hover:text-[#6b705c]">入会・会費案内</a></li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-8 rounded-3xl">
+                    <h5 class="font-bold mb-4 text-gray-900">見学・体験のお申込み</h5>
+                    <p class="text-sm text-gray-500 mb-6 italic">「まずは一度、道場の雰囲気を見に来てください」</p>
+                    <a href="tel:07089396143" class="block w-full text-center bg-[#6b705c] text-white py-4 rounded-2xl font-bold hover:opacity-90 transition shadow-lg shadow-[#6b705c]/20">
+                        070-8939-6143
+                    </a>
+                </div>
+            </div>
+            <div class="text-center pt-8 border-t border-gray-50">
+                <p class="text-xs text-gray-400">&copy; 2026 Aikido Yokohama Yuwakai. Website created for the community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById('content-' + tab).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('tab-active', 'bg-white', 'shadow-sm');
+                b.classList.add('text-gray-500');
+            });
+            const activeBtn = document.getElementById('btn-' + tab);
+            activeBtn.classList.add('tab-active', 'bg-white', 'shadow-sm');
+            activeBtn.classList.remove('text-gray-500');
+        }
+
+        function toggleCard(el) {
+            el.classList.toggle('active');
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('feeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['未就学・小学', '中学生', '高校生', '大学・一般', '65歳以上'],
+                    datasets: [{
+                        label: '月会費 (円)',
+                        data: [5500, 6000, 6500, 8000, 8000],
+                        backgroundColor: '#6b705c',
+                        hoverBackgroundColor: '#4f5442',
+                        borderRadius: 12,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            padding: 15,
+                            backgroundColor: '#1a1a1a',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                label: (ctx) => ` ￥${ctx.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: 10000,
+                            ticks: { font: { size: 11 } },
+                            grid: { color: '#f3f4f6', drawBorder: false }
+                        },
+                        x: { 
+                            ticks: { font: { size: 12, family: 'Noto Sans JP' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = initChart;
+    </script>
+</body>
+</html>
